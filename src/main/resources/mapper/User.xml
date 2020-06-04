@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.UserMapper">
+
+<!--    用户登录    -->
+    <select id="login" resultType="com.cykj.javabean.TabUser" parameterType="String">
+        select * from  tab_user
+        where account=#{account};
+    </select>
+
+<!--    用户注册       -->
+    <insert id="add" parameterType="com.cykj.javabean.TabUser">
+        insert into tab_user (name,password,sex,education,occupation,phone,email) values
+        (#{name},#{password},#{sex},#{education},#{occupation},#{phone},#{email});
+    </insert>
+
+<!--    批量删除用户  -->
+    <delete id="deleteUser"  parameterType="java.lang.String">
+        delete from tab_user where user_id in
+        <foreach collection="list"  index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+<!--    修改状态    -->
+    <update id="updateState" parameterType="java.lang.String">
+        update tab_user
+        <if test="userState=='启用'">set user_state='禁用'</if>
+        <if test="userState=='禁用'">set user_state='启用'</if>
+        where user_id=#{userId}
+    </update>
+<!--    查询用户    -->
+    <select id="selectList" resultMap="userMap">
+        select * from tab_user
+        <where>
+            <if test="user.name !=null and user.name !=''">and name like concat('%',#{user.name},'%')</if>
+            <if test="startDay !=null and startDay !=''">and reg_time between #{startDay} and #{endDay}</if>
+        </where>
+        limit #{start},#{limit}
+    </select>
+    <resultMap id="userMap" type="com.cykj.javabean.TabUser">
+        <result property="levelId" column="level_id"></result>
+        <association property="tabLevel" column="level_id" javaType="com.cykj.javabean.TabUser" select="selectLevel">
+        </association>
+    </resultMap>
+    <select id="selectLevel" parameterType="java.lang.Integer" resultType="com.cykj.javabean.TabLevel">
+        select level_name from tab_level where level_id = #{levelId}
+    </select>
+
+<!--    统计用户    -->
+    <select id="selectListCount" resultType="java.lang.Integer">
+        select count(*) from tab_user
+        <where>
+            <if test="user.name !=null and user.name !=''">and name = #{user.name}</if>
+        </where>
+    </select>
+
+    <select id="searchIntegral" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select user_integral from tab_user where user_id=#{userId}
+    </select>
+
+    <update id="addIntegral" parameterType="java.lang.Integer">
+        update tab_user set user_integral = #{userIntegral} where user_id = #{userId}
+    </update>
+</mapper>

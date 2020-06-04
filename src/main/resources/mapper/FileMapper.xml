@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.FileMapper">
+        <insert id="insertFile" parameterType="com.cykj.javabean.TabFile" >
+            insert  into tab_file (user_id, file_name, audit_state, file_path,file_size)
+            values (#{userId},#{fileName},#{auditState},#{filePath},#{fileSize})
+        </insert>
+
+    <select id="selectFilePage" parameterType="com.cykj.javabean.TabFile" resultType="com.cykj.javabean.TabFile">
+        select * from tab_file where user_id = #{tabFile.userId}
+            <if test="tabFile.fileName !=null and tabFile.fileName !=''">and file_name like  concat('%',#{tabFile.fileName},'%')</if>
+        limit #{page},#{limit}
+    </select>
+    <select id="selectFileCount" parameterType="com.cykj.javabean.TabFile" resultType="java.lang.Integer">
+        select count(*) from tab_file where user_id = #{tabFile.userId}
+    </select>
+    <select id="selectAllFile"  resultType="com.cykj.javabean.TabFile">
+        select * from tab_file limit #{page},#{limit}
+    </select>
+
+    <select id="selectAllFileCount" resultType="java.lang.Integer">
+        select count(*) from tab_file
+    </select>
+
+    <update id="auditFile" parameterType="java.lang.Integer">
+        update tab_file set audit_state = '审核通过' where file_id=#{fileId}
+    </update>
+</mapper>

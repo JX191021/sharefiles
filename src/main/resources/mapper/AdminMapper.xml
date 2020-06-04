@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.AdminMapper">
+
+    <resultMap id="loginAdmin" type="com.cykj.javabean.TabAdmin">
+<!--    只需写与数据库列名不一样的-->
+            <result property="adminId" column="admin_id"/>
+        </resultMap>
+
+    <!--管理员登录查询 -->
+    <select id="login" resultMap="loginAdmin" parameterType="java.lang.String">
+        select * from  tab_admin
+        where account=#{account};
+    </select>
+
+    <!--添加管理员-->
+    <insert id="add"  parameterType="com.cykj.javabean.TabAdmin" keyProperty="adminId" useGeneratedKeys="true">
+        insert into tab_admin (account,password,admin_name,role_id) values (#{account},#{password},#{adminName},#{roleId})
+    </insert>
+
+    <!--删除管理员-->
+    <delete id="deleteAdmin" parameterType="int">
+        delete from tab_admin where admin_id = #{adminId}
+    </delete>
+
+    <!--修改管理员-->
+    <update id="updateAdmin" parameterType="com.cykj.javabean.TabAdmin">
+        update tab_admin set admin_name = #{adminName} , role_id = #{roleId}
+        where admin_id = #{adminId}
+    </update>
+
+    <!--批量删除管理员-->
+    <delete id="batchDeleteAdmin"  parameterType="java.lang.String">
+        delete from tab_admin where admin_id in
+        <foreach collection="list"  index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <!--    管理员分页查询记录    -->
+    <select id="selectList" parameterType="java.lang.Integer" resultMap="adminMap">
+        select * from tab_admin
+        <where>
+            <if test="admin.adminName !=null and admin.adminName !=''">and admin_name = #{admin.adminName}</if>
+            <if test="admin.roleId !=null and admin.roleId !=''">and role_id = #{admin.roleId}</if>
+        </where>
+        limit #{start},#{limit}
+    </select>
+    <!--    管理员分页查询统计总数-->
+    <select id="selectListCount" resultType="int">
+        select count(*) from tab_admin
+        <where>
+            <if test="admin.adminName !=null and admin.adminName !=''">and admin_name = #{admin.adminName}</if>
+            <if test="admin.roleId !=null and admin.roleId !=''">and role_id = #{admin.roleId}</if>
+        </where>
+    </select>
+
+    <resultMap id="adminMap" type="com.cykj.javabean.TabAdmin">
+     <result property="roleId" column="role_id"></result>
+        <association property="tabRole" column="role_id" javaType="com.cykj.javabean.TabRole" select="selectRole">
+    </association>
+    </resultMap>
+
+    <select id="selectRole" parameterType="java.lang.Integer" resultType="com.cykj.javabean.TabRole">
+        select role_name from tab_role where role_id = #{roleId}
+    </select>
+
+
+
+</mapper>

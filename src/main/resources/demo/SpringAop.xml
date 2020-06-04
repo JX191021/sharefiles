@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--    纯简单的java对象切面        -->
+    <!--        创建一个增强Advice，通知        -->
+    <bean id="sleepAdvice" class="com.cykj.aop.sleepAdvice"></bean>
+    <!--        目标类，target         -->
+    <bean id="student" class="com.cykj.aop.Student"/>
+    <!--    定义切点，匹配所有的sleep方法    -->
+    <bean id="sleepAdvison" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice" ref="sleepAdvice"></property>
+        <property name="pattern" value=".*sleep"></property>
+    </bean>
+    <!--    自动代理配置，如果没有则Advice（增强）不起作用      -->
+    <bean id="studentProxy" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
+</beans>

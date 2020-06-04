@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.LevelMapper">
+    <select id="selectLevel" resultType="com.cykj.javabean.TabLevel">
+        select * from tab_level
+    </select>
+    <update id="updateLevel" parameterType="com.cykj.javabean.TabLevel">
+        update tab_level set
+        <if test="levelName !=null and levelName!=''">level_name = #{levelName},</if>
+        <if test="uploadIntegral !=null and uploadIntegral!=''">upload_integral = #{uploadIntegral},</if>
+        <if test="downloadIntegral !=null and downloadIntegral!=''">download_integral = #{downloadIntegral}</if>
+        where level_id = #{levelId}
+    </update>
+    <insert id="addLevel" parameterType="com.cykj.javabean.TabLevel">
+        insert into tab_level (level_name, upload_integral, download_integral) values
+        (#{levelName},#{uploadIntegral},#{downloadIntegral})
+    </insert>
+
+    <delete id="deleteLevel"  parameterType="java.lang.String">
+        delete from tab_level where level_id in
+        <foreach collection="list"  index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

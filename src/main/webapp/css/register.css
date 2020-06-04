@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    background-color: #339999;
+}
+
+.regDiv {
+    background-color:#FFFFFF;
+    border-radius: 15px;
+    background-color: #FFFFFF;
+    min-width: 320px;
+    max-width: 400px;
+    min-height: 300px;
+    /*padding: 2%;*/
+
+    border: 2px solid #CCCCCC;
+    /*水平居中*/
+    margin: auto;
+    /*宽度*/
+    width: 35%;
+    /*高度*/
+    height: 65%;
+    /*脱离文档流*/
+    position: relative;
+    /*偏移*/
+    top: 15%;
+    /*阴影效果*/
+    box-shadow: 2px 2px 10px 2px gainsboro;
+}
+#regForm{
+    margin: 0 auto;
+    width: 60%;
+    /*border: 1px solid red;*/
+}
+input[type="button"]{
+    width: 30%;
+}
+@media only screen and (min-width: 1000px){
+    body{
+        background-color:#336699;
+    }
+}
+@media only screen and (min-width: 500px){
+    body{
+        background-color:#336699;
+    }
+}
+@media only screen and (max-width: 768px){
+    body{
+        background-color:#336699;
+    }
+}

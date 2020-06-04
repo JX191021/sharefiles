@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cykj.mapper.RoleMapper">
+    <!--查出以及菜单-->
+    <select id="queryFirstMenuByRole" parameterType="java.lang.Integer" resultMap="firstMenuMap">
+        SELECT r.role_id,m.menu_id,menu_name FROM tab_role r
+        LEFT JOIN tab_role_menu rm on rm.role_id = r.role_id
+        LEFT JOIN tab_menu m on m.menu_id = rm.menu_id
+        where r.role_id = #{roleId}
+    </select>
+<!--    封装第一次查询结果1.封装进tabrole的list-->
+    <resultMap id="firstMenuMap" type="com.cykj.javabean.TabRole">
+        <id column="role_id" property="roleId"/>
+        <collection property="menuList" ofType="com.cykj.javabean.TabMenu">
+            <id property="menuId" column="menu_id"/>
+            <result property="menuName" column="menu_name"/>
+        </collection>
+    </resultMap>
+
+<!--    将第一次查询结果的属性(list)作为参数查询二级菜单-->
+    <select id="querySecMenuByRole" parameterType="java.util.List" resultType="com.cykj.javabean.TabMenu">
+        select * from tab_menu where up_id in
+        <foreach item="item" index="index" collection="list"  open="(" separator="," close=")">
+            #{item.menuId}
+        </foreach>
+    </select>
+
+    <!--查出一级菜单-->
+    <select id="queryFirstMenu" parameterType="java.lang.Integer" resultType="com.cykj.javabean.TabMenu">
+        SELECT m.menu_id,menu_name title FROM tab_role r
+        LEFT JOIN tab_role_menu rm on rm.role_id = r.role_id
+        LEFT JOIN tab_menu m on m.menu_id = rm.menu_id
+        where r.role_id = #{roleId}
+    </select>
+
+    <!--    将第一次查询结果的属性(list)作为参数查询二级菜单-->
+    <select id="querySecMenu" parameterType="java.util.List" resultType="com.cykj.javabean.TabMenu">
+        select menu_name title,menu_path,up_id from tab_menu where up_id in
+        <foreach item="item" index="index" collection="list"  open="(" separator="," close=")">
+            #{item.menuId}
+        </foreach>
+    </select>
+</mapper>
